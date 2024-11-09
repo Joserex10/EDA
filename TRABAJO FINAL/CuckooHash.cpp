@@ -235,8 +235,6 @@ public:
     Record(int dni, const string &nombre, const string &apellido, char genero, const string &fechaNacimiento, int edad, const string &direccion, const string &nacionalidad, const string &lugarNacimiento, const string &telefonoReferencia, const string &correoElectronico, const string &estadoCivil, const string &departamento, const string &provincia, const string &ciudad, const string &distrito, const string &ubicacion)
         : status('A'), dni(dni), nombre(nombre), apellido(apellido), genero(genero), fechaNacimiento(fechaNacimiento), edad(edad), direccion(direccion), nacionalidad(nacionalidad), lugarNacimiento(lugarNacimiento), telefonoReferencia(telefonoReferencia), correoElectronico(correoElectronico), estadoCivil(estadoCivil), departamento(departamento), provincia(provincia), ciudad(ciudad), distrito(distrito), ubicacion(ubicacion) {}
 
-    // setfill y setw son para mantener el espaciado correcto en el archivo y que todo este centrado --JOSEREX--
-
     string fixedWidth(const string &text, int width) const
     {
         if (text.length() < width)
@@ -293,7 +291,6 @@ public:
     }
 };
 
-// Clase database contiene las operaciones principales como generar los datos, insertar registros, buscar y eliminar mediante el DNI --JOSEREX--
 class Database
 {
 private:
@@ -358,7 +355,6 @@ public:
         return 900000000 + phoneNumber;                    // Asegurar que el numero comienza con '9' y tiene 9 digitos
     }
 
-    // Funcion que genera una gran cantidad de datos aleatorios --JOSEREX--
     void generateData()
     {
 
@@ -449,19 +445,19 @@ public:
             char genero = (rand() % 2 == 0) ? 'M' : 'F';
             int randomIndex = rand() % fechasNacimientoSize;
             int birthYear = 2024 - edad;
-            string fechaNacimiento = fechasNacimiento[randomIndex] + "-" + to_string(birthYear); // Simplified date of birth
+            string fechaNacimiento = fechasNacimiento[randomIndex] + "-" + to_string(birthYear);
 
-            // 1. Select departamento
+            // 1. Seleccionar departamento
             auto departamento_it = peru_geografia.begin();
             advance(departamento_it, rand() % peru_geografia.size());
             string departamento = departamento_it->first;
 
-            // 2. Select provincia
+            // 2. Seleccionar provincia
             auto provincia_it = departamento_it->second.begin();
             advance(provincia_it, rand() % departamento_it->second.size());
             string provincia = provincia_it->first;
 
-            // 3. Select distrito
+            // 3. Seleccionar distrito
             auto distrito_it = provincia_it->second.begin();
             advance(distrito_it, rand() % provincia_it->second.size());
             string distrito = distrito_it->first;
@@ -469,14 +465,13 @@ public:
             // Obtener la ciudad asociada al distrito
             string ciudad = distrito_it->second.first;
 
-            // 4. Select ubicacion within the distrito
+            // 4. Seleccionar ubicacion segun el distrito
             vector<string> &ubicaciones = distrito_it->second.second;
             string ubicacion = ubicaciones[rand() % ubicaciones.size()];
 
-            // Construct the full address
+            // Construir la direccion completa
             string direccion = departamento + ", " + provincia + ", " + distrito + ", " + ubicacion;
 
-            // Generate the other fields
             string nacionalidad = nacionalidades[rand() % nacionalidadesSize];
             string lugarNacimiento = lugaresNacimiento[rand() % lugaresNacimientoSize];
             string telefonoReferencia = to_string(generateUniquePhoneNumber(i));
@@ -854,7 +849,6 @@ public:
         system("pause");
     }
 
-    // Menu de opciones que facilita la navegacion del programa --JOSEREX--
     void menu()
     {
         while (true)
@@ -930,7 +924,6 @@ public:
         }
     }
 
-    // Muestra el registro completo de la persona gracias a la busqueda mendiante su DNI --JOSEREX--
     void searchByDni(uint32_t dni)
     {
         uint64_t pos = findPositionInIndex(dni);
