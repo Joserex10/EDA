@@ -31,7 +31,6 @@ const int BIRTHPLACE_LENGTH = 30;   // Longitud del lugar de nacimiento
 const int PHONE_LENGTH = 15;        // Longitud del telefono de referencia
 const int EMAIL_LENGTH = 30;        // Longitud del correo electronico
 const int CIVIL_STATUS_LENGTH = 10; // Longitud del estado civil
-// Longitud total del registro
 const char DATA_FILE[] = "data.txt";
 const char HASH_INDEX_FILE[] = "hash_index.dat";
 
@@ -250,10 +249,7 @@ public:
     string serialize() const
     {
         ostringstream oss;
-        oss << "  " << status << "    | " << fixedWidth(to_string(dni), 8) << " | " << fixedWidth(nombre, 13) << " | " << fixedWidth(apellido, 15) << " | " << "   " << genero << "   | "
-            << fixedWidth(fechaNacimiento, 10) << " | " << " " << fixedWidth(to_string(edad), 2) << "  | " << fixedWidth(departamento, 10) << "   | " << fixedWidth(provincia, 13) << " | "
-            << fixedWidth(ciudad, 15) << " | " << fixedWidth(distrito, 17) << " | " << fixedWidth(ubicacion, 30) << " | " << fixedWidth(nacionalidad, 12) << " | " << fixedWidth(lugarNacimiento, 16) << " | "
-            << fixedWidth(telefonoReferencia, 10) << " | " << fixedWidth(correoElectronico, 31) << " | " << estadoCivil << '\n';
+        oss << "  " << status << "    | " << fixedWidth(to_string(dni), 8) << " | " << fixedWidth(nombre, 13) << " | " << fixedWidth(apellido, 15) << " | " << "   " << genero << "   | " << fixedWidth(fechaNacimiento, 10) << " | " << " " << fixedWidth(to_string(edad), 2) << "  | " << fixedWidth(departamento, 10) << "   | " << fixedWidth(provincia, 13) << " | " << fixedWidth(ciudad, 15) << " | " << fixedWidth(distrito, 17) << " | " << fixedWidth(ubicacion, 30) << " | " << fixedWidth(nacionalidad, 12) << " | " << fixedWidth(lugarNacimiento, 16) << " | " << fixedWidth(telefonoReferencia, 10) << " | " << fixedWidth(correoElectronico, 31) << " | " << estadoCivil << '\n';
         return oss.str();
     }
 
@@ -359,21 +355,15 @@ public:
     {
 
         const string nombres[] = {
-            "Juan", "Maria", "Carlos", "Ana", "Pedro", "Luis", "Sofia", "Laura", "David", "Jose", "Elena", "Ricardo", "Daniel", "Marta", "Jorge", "Sandra", "Santiago", "Patricia", "Roberto", "Carmen", "Fernando", "Lucia", "Francisco", "Isabel", "Alejandro", "Natalia", "Miguel", "Teresa", "Raul", "Monica", "Gabriel", "Ana Maria", "Enrique", "Esther", "Javier", "Susana", "Pablo", "Andrea", "Manuel", "Silvia",
-            "Ivan", "Beatriz", "Christian", "Raquel", "Oscar", "Virginia", "Alberto", "Sara", "Diego", "Eva", "Claudia", "Cristina", "Veronica", "Marcos", "Joaquin", "Bruno", "Diana", "Rodrigo", "Nicolas", "Renato", "Sebastian", "Emilia", "Victoria", "Matias", "Paula", "Adriana", "Sergio", "Marcela", "Benjamin", "Elisa", "Martin", "Renata", "Federico", "Daniela", "Guillermo", "Luz", "Antonio", "Juliana", "Mariano", "Agustin",
-            "Esteban", "Valeria", "Belen", "Cecilia", "Gonzalo", "Ignacio", "Carolina", "Florencia", "Emilio", "Fabiana", "Pilar", "Valentina", "Andres", "Celeste", "Mariela", "Luciano", "Romina", "Mauro", "Maribel", "Francisca"};
+            "Juan", "Maria", "Carlos", "Ana", "Pedro", "Luis", "Sofia", "Laura", "David", "Jose", "Elena", "Ricardo", "Daniel", "Marta", "Jorge", "Sandra", "Santiago", "Patricia", "Roberto", "Carmen", "Fernando", "Lucia", "Francisco", "Isabel", "Alejandro", "Natalia", "Miguel", "Teresa", "Raul", "Monica", "Gabriel", "Ana Maria", "Enrique", "Esther", "Javier", "Susana", "Pablo", "Andrea", "Manuel", "Silvia", "Ivan", "Beatriz", "Christian", "Raquel", "Oscar", "Virginia", "Alberto", "Sara", "Diego", "Eva", "Claudia", "Cristina", "Veronica", "Marcos", "Joaquin", "Bruno", "Diana", "Rodrigo", "Nicolas", "Renato", "Sebastian", "Emilia", "Victoria", "Matias", "Paula", "Adriana", "Sergio", "Marcela", "Benjamin", "Elisa", "Martin", "Renata", "Federico", "Daniela", "Guillermo", "Luz", "Antonio", "Juliana", "Mariano", "Agustin", "Esteban", "Valeria", "Belen", "Cecilia", "Gonzalo", "Ignacio", "Carolina", "Florencia", "Emilio", "Fabiana", "Pilar", "Valentina", "Andres", "Celeste", "Mariela", "Luciano", "Romina", "Mauro", "Maribel", "Francisca"};
         const int nombresSize = sizeof(nombres) / sizeof(nombres[0]);
 
         const string apellidos[] = {
-            "Gomez", "Perez", "Rodriguez", "Sanchez", "Garcia", "Martinez", "Lopez", "Diaz", "Fernandez", "Torres", "Ortiz", "Ramirez", "Cruz", "Flores", "Hernandez", "Jimenez", "Moreno", "Munoz", "Alvarez", "Romero", "Navarro", "Campos", "Vazquez", "Castillo", "Gil", "Ruiz", "Morales", "Ortega", "Delgado", "Castro", "Vargas", "Guerrero", "Iglesias", "Gutierrez", "Santos", "Lara", "Marquez", "Nieto", "Vega", "Leon",
-            "Herrera", "Reyes", "Aguilar", "Dominguez", "Lorenzo", "Soto", "Serrano", "Cabrera", "Ramos", "Molina", "Paredes", "Chavez", "Silva", "Palacios", "Rojas", "Guzman", "Cordero", "Estrada", "Ponce", "Bustos", "Salazar", "Mendoza", "Figueroa", "Carrillo", "Villanueva", "Bermudez", "Vargas", "Guerra", "Mejia", "Montes", "Pacheco", "Huaman", "Rincon", "Rios", "Benitez", "Aguirre", "Arce", "Luna", "Valdez", "Maldonado",
-            "Trujillo", "Espinoza", "Mora", "Caceres", "Llanos", "Barrientos", "Peralta", "Cordova", "Zambrano", "Loayza", "Morante", "Zarate", "Tamayo", "Venegas", "Bellido", "Valencia", "Cruzado", "Leiva", "Salas", "Renteria"};
+            "Gomez", "Perez", "Rodriguez", "Sanchez", "Garcia", "Martinez", "Lopez", "Diaz", "Fernandez", "Torres", "Ortiz", "Ramirez", "Cruz", "Flores", "Hernandez", "Jimenez", "Moreno", "Munoz", "Alvarez", "Romero", "Navarro", "Campos", "Vazquez", "Castillo", "Gil", "Ruiz", "Morales", "Ortega", "Delgado", "Castro", "Vargas", "Guerrero", "Iglesias", "Gutierrez", "Santos", "Lara", "Marquez", "Nieto", "Vega", "Leon", "Herrera", "Reyes", "Aguilar", "Dominguez", "Lorenzo", "Soto", "Serrano", "Cabrera", "Ramos", "Molina", "Paredes", "Chavez", "Silva", "Palacios", "Rojas", "Guzman", "Cordero", "Estrada", "Ponce", "Bustos", "Salazar", "Mendoza", "Figueroa", "Carrillo", "Villanueva", "Bermudez", "Vargas", "Guerra", "Mejia", "Montes", "Pacheco", "Huaman", "Rincon", "Rios", "Benitez", "Aguirre", "Arce", "Luna", "Valdez", "Maldonado", "Trujillo", "Espinoza", "Mora", "Caceres", "Llanos", "Barrientos", "Peralta", "Cordova", "Zambrano", "Loayza", "Morante", "Zarate", "Tamayo", "Venegas", "Bellido", "Valencia", "Cruzado", "Leiva", "Salas", "Renteria"};
         const int apellidosSize = sizeof(apellidos) / sizeof(apellidos[0]);
 
         const string fechasNacimiento[] = {
-            "01-05", "03-12", "07-23", "10-31", "05-18", "08-20", "12-14", "02-10", "04-25", "09-09", "11-17", "06-03", "01-20", "03-29", "08-05", "10-12", "05-27", "09-15", "12-01", "02-28", "04-14", "07-08", "11-05", "06-24", "01-13", "03-17", "07-30", "10-18", "05-22", "08-17", "12-09", "02-22", "04-02", "09-01", "11-30", "06-11", "01-29", "03-04", "07-15", "10-27", "05-09", "08-23", "12-21", "02-07", "04-28", "09-12", "11-19", "06-19", "01-08", "03-21", "07-11", "10-05", "05-13", "08-08", "12-04", "02-15", "04-06", "09-26", "11-01", "06-28", "01-26", "03-09", "07-25", "10-14", "05-30", "08-14", "12-19", "02-03", "04-17", "09-07", "11-22", "06-16", "01-03", "03-26", "07-03", "10-23", "05-05", "08-26", "12-29", "02-18",
-            "04-09", "09-19", "11-14", "06-06", "01-17", "03-31", "07-21", "10-07", "05-19", "08-02", "12-16", "02-27", "04-13", "09-22", "11-03", "06-30", "01-11", "03-07", "07-27", "10-25", "05-02", "08-25", "12-07", "02-05", "04-21", "09-05", "11-09", "06-13", "01-24", "03-14", "07-02", "10-29", "05-08", "08-13", "12-25", "02-23", "04-04", "09-11", "11-25", "06-09", "01-16", "03-19", "07-17", "10-09", "05-25", "08-03", "12-03", "02-12", "04-19", "09-30", "11-07", "06-20", "01-31", "03-02", "07-14", "10-15", "05-11", "08-30", "12-23", "02-01", "04-07", "09-14", "11-20", "06-25", "01-09", "03-24", "07-10", "10-06", "05-16", "08-07", "12-12", "02-19", "04-15", "09-04", "11-28", "06-08", "01-28", "03-16", "07-29", "10-21",
-            "05-04", "08-10", "12-06", "02-26", "04-24", "09-21", "11-11", "06-27", "01-19", "03-06", "07-19", "10-17", "05-20", "08-15", "12-20", "02-14", "04-11", "09-25", "11-02", "06-10", "01-23", "03-30", "07-05", "10-02", "05-14", "08-22", "12-31", "02-24", "04-18", "09-17", "11-26", "06-15", "01-12", "03-13", "07-07", "10-20", "05-21", "08-04", "12-11", "02-09"};
+            "01-05", "03-12", "07-23", "10-31", "05-18", "08-20", "12-14", "02-10", "04-25", "09-09", "11-17", "06-03", "01-20", "03-29", "08-05", "10-12", "05-27", "09-15", "12-01", "02-28", "04-14", "07-08", "11-05", "06-24", "01-13", "03-17", "07-30", "10-18", "05-22", "08-17", "12-09", "02-22", "04-02", "09-01", "11-30", "06-11", "01-29", "03-04", "07-15", "10-27", "05-09", "08-23", "12-21", "02-07", "04-28", "09-12", "11-19", "06-19", "01-08", "03-21", "07-11", "10-05", "05-13", "08-08", "12-04", "02-15", "04-06", "09-26", "11-01", "06-28", "01-26", "03-09", "07-25", "10-14", "05-30", "08-14", "12-19", "02-03", "04-17", "09-07", "11-22", "06-16", "01-03", "03-26", "07-03", "10-23", "05-05", "08-26", "12-29", "02-18", "04-09", "09-19", "11-14", "06-06", "01-17", "03-31", "07-21", "10-07", "05-19", "08-02", "12-16", "02-27", "04-13", "09-22", "11-03", "06-30", "01-11", "03-07", "07-27", "10-25", "05-02", "08-25", "12-07", "02-05", "04-21", "09-05", "11-09", "06-13", "01-24", "03-14", "07-02", "10-29", "05-08", "08-13", "12-25", "02-23", "04-04", "09-11", "11-25", "06-09", "01-16", "03-19", "07-17", "10-09", "05-25", "08-03", "12-03", "02-12", "04-19", "09-30", "11-07", "06-20", "01-31", "03-02", "07-14", "10-15", "05-11", "08-30", "12-23", "02-01", "04-07", "09-14", "11-20", "06-25", "01-09", "03-24", "07-10", "10-06", "05-16", "08-07", "12-12", "02-19", "04-15", "09-04", "11-28", "06-08", "01-28", "03-16", "07-29", "10-21", "05-04", "08-10", "12-06", "02-26", "04-24", "09-21", "11-11", "06-27", "01-19", "03-06", "07-19", "10-17", "05-20", "08-15", "12-20", "02-14", "04-11", "09-25", "11-02", "06-10", "01-23", "03-30", "07-05", "10-02", "05-14", "08-22", "12-31", "02-24", "04-18", "09-17", "11-26", "06-15", "01-12", "03-13", "07-07", "10-20", "05-21", "08-04", "12-11", "02-09"};
         const int fechasNacimientoSize = sizeof(fechasNacimiento) / sizeof(fechasNacimiento[0]);
 
         unordered_map<string, unordered_map<string, unordered_map<string, pair<string, vector<string>>>>> peru_geografia = {
@@ -386,16 +376,11 @@ public:
             {"Puno", {{"Puno", {{"Puno", {"Puno", {"Av. Titicaca 654", "Calle Arequipa 987"}}}, {"Juliaca", {"Puno", {"Av. Ferrocarril 123", "Calle Huancavelica 567"}}}}}, {"Yunguyo", {{"Yunguyo", {"Yunguyo", {"Calle Comercio 345", "Av. Principal 654"}}}}}}}};
 
         const string nacionalidades[] = {
-            "Peruana", "Argentina", "Chilena", "Colombiana", "Venezolana", "Ecuatoriana", "Boliviana", "Brasilena", "Uruguaya", "Paraguaya", "Mexicana", "Guatemalteca", "Cubana", "Hondurena", "Salvadorena", "Costarricense", "Panamena", "Nicaraguense", "Dominicana", "Puertorriquena", "Espanola", "Italiana", "Francesa", "Alemana", "Inglesa", "Portuguesa", "Belga", "Holandesa", "Suiza", "Austriaca", "Sueca", "Noruega", "Danesa", "Finlandesa", "Rusa", "Polaca", "Griega", "Turca", "China", "Japonesa", "Coreana", "India", "Egipcia", "Sudafricana", "Australiana", "Neozelandesa", "Canadiense", "Estadounidense", "Mexicana", "Venezolana", "Colombiana", "Brasilena", "Peruana", "Argentina",
-            "Chilena", "Boliviana", "Ecuatoriana", "Uruguaya", "Paraguaya", "Cubana", "Dominicana", "Salvadorena", "Costarricense", "Panamena", "Hondurena", "Nicaraguense", "Guatemalteca", "Belicena", "Jamaicana", "Haitiana", "Trinitense", "Bahamena", "Barbadense", "Granadina", "Surinamesa", "Guyanes", "Venezolana", "Colombiana", "Peruana", "Brasilena", "Argentina", "Chilena", "Boliviana", "Paraguaya", "Uruguaya", "Ecuatoriana", "Mexicana", "Guatemalteca", "Salvadorena", "Hondurena", "Nicaraguense", "Costarricense", "Panamena", "Cana", "Estadounidense", "Canadiense", "Espanola", "Francesa", "Italiana", "Alemana", "Inglesa", "Irlandesa",
-            "Escocesa", "Galesa", "Portuguesa", "Belga", "Holandesa", "Suiza", "Austriaca", "Sueca", "Noruega", "Danesa", "Finlandesa", "Rusa", "Polaca", "Checa", "Eslovaca", "Hungara", "Griega", "Turca", "Bulgara", "Rumana", "Croata", "Serbia", "Eslovena", "Bosnia", "Macedonia", "Albanesa", "Ucraniana", "Bielorrusa", "Lituana", "Letona", "Estonia", "Moldava", "Kazaja", "Uzbeca", "Tayika", "Kirguisa", "Turkmena", "Azerbaiyana", "Armenia", "Georgiana", "China", "Japonesa", "Coreana", "India", "Pakistani", "Bangladesi", "Nepali", "Butanesa", "Camboyana", "Vietnamita", "Laosiana", "Tailandesa", "Malaya", "Indonesia", "Filipina", "Singapurense", "Bruneana", "Australiana", "Neozelandesa", "Papu",
-            "Egipcia", "Marroqui", "Argelina", "Tunecina", "Libia", "Sudanesa", "Etiope", "Somali", "Keniata", "Tanzana", "Ugandesa", "Ruandesa", "Congolena", "Sudafricana", "Nigeriana", "Ghanesa", "Senegalesa", "Mali", "Chadiana", "Angolena", "Zimbabuense", "Mozambiquena", "Madagascarense", "Namibia", "Botswana", "Zambiana", "Malaui", "Lesoto", "Suazi", "Gambiana", "Mauritana", "Liberiana", "Sierra Leona", "Guineana", "Ecuatoguineana", "Gabonesa", "Saharaui", "Israeli", "Palestina", "Jordana", "Libanesa", "Siria", "Iraqui", "Irani", "Saudi", "Emirati", "Qatari", "Kuwaiti", "Yemeni", "Omani", "Bahraini"};
+            "Peruana", "Argentina", "Chilena", "Colombiana", "Venezolana", "Ecuatoriana", "Boliviana", "Brasilena", "Uruguaya", "Paraguaya", "Mexicana", "Guatemalteca", "Cubana", "Hondurena", "Salvadorena", "Costarricense", "Panamena", "Nicaraguense", "Dominicana", "Puertorriquena", "Espanola", "Italiana", "Francesa", "Alemana", "Inglesa", "Portuguesa", "Belga", "Holandesa", "Suiza", "Austriaca", "Sueca", "Noruega", "Danesa", "Finlandesa", "Rusa", "Polaca", "Griega", "Turca", "China", "Japonesa", "Coreana", "India", "Egipcia", "Sudafricana", "Australiana", "Neozelandesa", "Canadiense", "Estadounidense", "Mexicana", "Venezolana", "Colombiana", "Brasilena", "Peruana", "Argentina", "Chilena", "Boliviana", "Ecuatoriana", "Uruguaya", "Paraguaya", "Cubana", "Dominicana", "Salvadorena", "Costarricense", "Panamena", "Hondurena", "Nicaraguense", "Guatemalteca", "Belicena", "Jamaicana", "Haitiana", "Trinitense", "Bahamena", "Barbadense", "Granadina", "Surinamesa", "Guyanes", "Venezolana", "Colombiana", "Peruana", "Brasilena", "Argentina", "Chilena", "Boliviana", "Paraguaya", "Uruguaya", "Ecuatoriana", "Mexicana", "Guatemalteca", "Salvadorena", "Hondurena", "Nicaraguense", "Costarricense", "Panamena", "Cana", "Estadounidense", "Canadiense", "Espanola", "Francesa", "Italiana", "Alemana", "Inglesa", "Irlandesa", "Escocesa", "Galesa", "Portuguesa", "Belga", "Holandesa", "Suiza", "Austriaca", "Sueca", "Noruega", "Danesa", "Finlandesa", "Rusa", "Polaca", "Checa", "Eslovaca", "Hungara", "Griega", "Turca", "Bulgara", "Rumana", "Croata", "Serbia", "Eslovena", "Bosnia", "Macedonia", "Albanesa", "Ucraniana", "Bielorrusa", "Lituana", "Letona", "Estonia", "Moldava", "Kazaja", "Uzbeca", "Tayika", "Kirguisa", "Turkmena", "Azerbaiyana", "Armenia", "Georgiana", "China", "Japonesa", "Coreana", "India", "Pakistani", "Bangladesi", "Nepali", "Butanesa", "Camboyana", "Vietnamita", "Laosiana", "Tailandesa", "Malaya", "Indonesia", "Filipina", "Singapurense", "Bruneana", "Australiana", "Neozelandesa", "Papu", "Egipcia", "Marroqui", "Argelina", "Tunecina", "Libia", "Sudanesa", "Etiope", "Somali", "Keniata", "Tanzana", "Ugandesa", "Ruandesa", "Congolena", "Sudafricana", "Nigeriana", "Ghanesa", "Senegalesa", "Mali", "Chadiana", "Angolena", "Zimbabuense", "Mozambiquena", "Madagascarense", "Namibia", "Botswana", "Zambiana", "Malaui", "Lesoto", "Suazi", "Gambiana", "Mauritana", "Liberiana", "Sierra Leona", "Guineana", "Ecuatoguineana", "Gabonesa", "Saharaui", "Israeli", "Palestina", "Jordana", "Libanesa", "Siria", "Iraqui", "Irani", "Saudi", "Emirati", "Qatari", "Kuwaiti", "Yemeni", "Omani", "Bahraini"};
         const int nacionalidadesSize = sizeof(nacionalidades) / sizeof(nacionalidades[0]);
 
         const string lugaresNacimiento[] = {
-            "Lima", "Cusco", "Arequipa", "Trujillo", "Chiclayo", "Piura", "Iquitos", "Tacna", "Puno", "Huancayo", "Ayacucho", "Huaraz", "Pucallpa", "Chimbote", "Moquegua", "Tarapoto", "Juliaca", "Tumbes", "Ica", "Mollendo", "Nazca", "Buenos Aires", "Cordoba", "Rosario", "Mendoza", "Mar del Plata", "Santiago", "Valparaiso", "Vina del Mar", "Concepcion", "La Serena", "Bogota", "Medellin", "Cali", "Barranquilla", "Cartagena", "Caracas", "Maracaibo", "Valencia", "Barquisimeto", "Merida", "Quito", "Guayaquil", "Cuenca", "Ambato", "Loja", "La Paz", "Santa Cruz", "Cochabamba", "Oruro", "Sucre", "Rio de Janeiro", "Sao Paulo", "Brasilia", "Salvador", "Fortaleza", "Montevideo", "Punta del Este", "Salto", "Rivera", "Maldonado", "Asuncion", "Ciudad del Este", "Encarnacion", "Pedro Juan Caballero", "San Lorenzo", "Mexico City", "Guadalajara", "Monterrey", "Cancun", "Puebla", "Guatemala City", "Antigua", "Quetzaltenango", "Escuintla", "Coban", "Havana", "Santiago de Cuba", "Camaguey", "Holguin", "Santa Clara", "Madrid", "Barcelona", "Seville", "Valencia", "Bilbao",
-            "Rome", "Milan", "Florence", "Naples", "Venice", "Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Berlin", "Munich", "Frankfurt", "Hamburg", "Cologne", "London", "Manchester", "Birmingham", "Liverpool", "Edinburgh", "Lisbon", "Porto", "Coimbra", "Braga", "Faro", "Brussels", "Antwerp", "Ghent", "Bruges", "Leuven", "Amsterdam", "Rotterdam", "The Hague", "Utrecht", "Eindhoven", "Zurich", "Geneva", "Bern", "Basel", "Lausanne", "Vienna", "Salzburg", "Innsbruck", "Graz", "Linz", "Stockholm", "Gothenburg", "Malmo", "Uppsala", "Vasteras", "Oslo", "Bergen", "Trondheim", "Stavanger", "Drammen", "Copenhagen", "Aarhus", "Odense", "Aalborg", "Esbjerg", "Helsinki", "Espoo", "Tampere", "Vantaa", "Oulu", "Moscow", "Saint Petersburg", "Novosibirsk", "Yekaterinburg", "Nizhny Novgorod", "Warsaw", "Krakow", "Lodz", "Wroclaw", "Poznan", "Athens", "Thessaloniki", "Patras", "Heraklion", "Larissa",
-            "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya", "Beijing", "Shanghai", "Guangzhou", "Shenzhen", "Chengdu", "Tokyo", "Osaka", "Kyoto", "Yokohama", "Nagoya", "Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "New Delhi", "Mumbai", "Bangalore", "Kolkata", "Chennai", "Cairo", "Alexandria", "Giza", "Luxor", "Aswan", "Cape Town", "Johannesburg", "Durban", "Pretoria", "Port Elizabeth", "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Auckland", "Wellington", "Christchurch", "Hamilton", "Dunedin", "Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa", "New York", "Los Angeles", "Chicago", "Houston", "Philadelphia", "Buenos Aires", "Cordoba", "Rosario", "Mendoza", "La Plata"};
+            "Lima", "Cusco", "Arequipa", "Trujillo", "Chiclayo", "Piura", "Iquitos", "Tacna", "Puno", "Huancayo", "Ayacucho", "Huaraz", "Pucallpa", "Chimbote", "Moquegua", "Tarapoto", "Juliaca", "Tumbes", "Ica", "Mollendo", "Nazca", "Buenos Aires", "Cordoba", "Rosario", "Mendoza", "Mar del Plata", "Santiago", "Valparaiso", "Vina del Mar", "Concepcion", "La Serena", "Bogota", "Medellin", "Cali", "Barranquilla", "Cartagena", "Caracas", "Maracaibo", "Valencia", "Barquisimeto", "Merida", "Quito", "Guayaquil", "Cuenca", "Ambato", "Loja", "La Paz", "Santa Cruz", "Cochabamba", "Oruro", "Sucre", "Rio de Janeiro", "Sao Paulo", "Brasilia", "Salvador", "Fortaleza", "Montevideo", "Punta del Este", "Salto", "Rivera", "Maldonado", "Asuncion", "Ciudad del Este", "Encarnacion", "Pedro Juan Caballero", "San Lorenzo", "Mexico City", "Guadalajara", "Monterrey", "Cancun", "Puebla", "Guatemala City", "Antigua", "Quetzaltenango", "Escuintla", "Coban", "Havana", "Santiago de Cuba", "Camaguey", "Holguin", "Santa Clara", "Madrid", "Barcelona", "Seville", "Valencia", "Bilbao", "Rome", "Milan", "Florence", "Naples", "Venice", "Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Berlin", "Munich", "Frankfurt", "Hamburg", "Cologne", "London", "Manchester", "Birmingham", "Liverpool", "Edinburgh", "Lisbon", "Porto", "Coimbra", "Braga", "Faro", "Brussels", "Antwerp", "Ghent", "Bruges", "Leuven", "Amsterdam", "Rotterdam", "The Hague", "Utrecht", "Eindhoven", "Zurich", "Geneva", "Bern", "Basel", "Lausanne", "Vienna", "Salzburg", "Innsbruck", "Graz", "Linz", "Stockholm", "Gothenburg", "Malmo", "Uppsala", "Vasteras", "Oslo", "Bergen", "Trondheim", "Stavanger", "Drammen", "Copenhagen", "Aarhus", "Odense", "Aalborg", "Esbjerg", "Helsinki", "Espoo", "Tampere", "Vantaa", "Oulu", "Moscow", "Saint Petersburg", "Novosibirsk", "Yekaterinburg", "Nizhny Novgorod", "Warsaw", "Krakow", "Lodz", "Wroclaw", "Poznan", "Athens", "Thessaloniki", "Patras", "Heraklion", "Larissa", "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya", "Beijing", "Shanghai", "Guangzhou", "Shenzhen", "Chengdu", "Tokyo", "Osaka", "Kyoto", "Yokohama", "Nagoya", "Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "New Delhi", "Mumbai", "Bangalore", "Kolkata", "Chennai", "Cairo", "Alexandria", "Giza", "Luxor", "Aswan", "Cape Town", "Johannesburg", "Durban", "Pretoria", "Port Elizabeth", "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Auckland", "Wellington", "Christchurch", "Hamilton", "Dunedin", "Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa", "New York", "Los Angeles", "Chicago", "Houston", "Philadelphia", "Buenos Aires", "Cordoba", "Rosario", "Mendoza", "La Plata"};
         const int lugaresNacimientoSize = sizeof(lugaresNacimiento) / sizeof(lugaresNacimiento[0]);
 
         const string estadosCiviles[] = {
@@ -526,7 +511,6 @@ public:
     {
         uint32_t dni;
         unsigned short edad;
-
         string nombre, apellido, direccion, nacionalidad, lugarNacimiento, telefonoReferencia, correoElectronico, estadoCivil, departamento, provincia, ciudad, distrito, ubicacion;
         char genero;
 
@@ -575,7 +559,7 @@ public:
             if (!dataFile.is_open())
             {
                 cout << "\nError abriendo el archivo de datos.\n";
-                system("pause");
+                systemPauseWn();
                 return;
             }
 
@@ -592,7 +576,7 @@ public:
             {
                 cout << "\nDNI ya existe. No se puede agregar el registro.\n";
             }
-            system("pause");
+            systemPauseWn();
             return;
         }
 
@@ -846,7 +830,20 @@ public:
         indexFile.close();
 
         cout << "\nRegistro insertado correctamente.\n";
+        systemPauseWn();
+    }
+
+    void MenuWorkFlow()
+    {
+        cout << system("pause");
+        cout << "\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    void systemPauseWn()
+    {
         system("pause");
+        cout << "\n";
     }
 
     void menu()
@@ -862,23 +859,21 @@ public:
             cout << "|  4. Salir                          |\n";
             cout << "======================================\n";
             cout << "Seleccione una opcion: ";
-            int option;
+            unsigned short option;
+
             if (!(cin >> option))
             {
                 cout << "\nOpcion no valida. Intentelo de nuevo.\n"
                      << endl;
-                cout << system("pause");
-                cout << "\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                MenuWorkFlow();
                 continue;
             }
-
-            if (option == 1)
+            switch (option)
             {
+            case 1:
                 insertRecord();
-            }
-            else if (option == 2)
+                break;
+            case 2:
             {
                 int dni;
                 cout << "\nIngrese el DNI a buscar: ";
@@ -886,15 +881,13 @@ public:
                 {
                     cout << "\nEntrada invalida.\n"
                          << endl;
-                    cout << system("pause");
-                    cout << "\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    MenuWorkFlow();
                     continue;
                 }
                 searchByDni(dni);
+                break;
             }
-            else if (option == 3)
+            case 3:
             {
                 int dni;
                 cout << "\nIngrese el DNI a eliminar: ";
@@ -902,24 +895,18 @@ public:
                 {
                     cout << "\nEntrada invalida.\n"
                          << endl;
-                    cout << system("pause");
-                    cout << "\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    MenuWorkFlow();
                     continue;
                 }
                 deleteByDni(dni);
-            }
-            else if (option == 4)
-            {
                 break;
             }
-            else
-            {
+            case 4:
+                return; // Salir del bucle y la función
+            default:
                 cout << "\nOpcion no valida. Intentelo de nuevo.\n"
                      << endl;
-                cout << system("pause");
-                cout << "\n";
+                systemPauseWn();
             }
         }
     }
@@ -930,7 +917,7 @@ public:
         if (pos == static_cast<uint64_t>(-1))
         {
             cout << "\nRegistro no encontrado.\n";
-            system("pause");
+            systemPauseWn();
             return;
         }
 
@@ -938,7 +925,7 @@ public:
         if (!dataFile.is_open())
         {
             cout << "\nError abriendo el archivo de datos.\n";
-            system("pause");
+            systemPauseWn();
             return;
         }
 
@@ -951,7 +938,7 @@ public:
         if (recordStr.empty())
         {
             cout << "\nRegistro no encontrado en la posición especificada.\n";
-            system("pause");
+            systemPauseWn();
             return;
         }
 
@@ -960,7 +947,7 @@ public:
         if (record.status == 'D')
         {
             cout << "\nEl registro ya ha sido eliminado.\n";
-            system("pause");
+            systemPauseWn();
             return;
         }
 
@@ -983,7 +970,7 @@ public:
         cout << setw(20) << "Telefono: " << record.telefonoReferencia << "\n";
         cout << setw(20) << "Correo: " << record.correoElectronico << "\n";
         cout << setw(20) << "Estado Civil: " << record.estadoCivil << "\n";
-        system("pause");
+        systemPauseWn();
     }
 
     // Elimina un registro mediante su DNI, Escribe un D de (delete) en el resgitro
@@ -993,7 +980,7 @@ public:
         if (pos == static_cast<uint64_t>(-1))
         {
             cout << "\nRegistro no encontrado.\n";
-            system("pause");
+            systemPauseWn();
             return;
         }
 
@@ -1014,18 +1001,17 @@ public:
         {
             cout << "\nEl registro ya ha sido eliminado.\n";
             dataFile.close();
-            system("pause");
+            systemPauseWn();
             return;
         }
 
         // Marcar el registro como eliminado
         dataFile.seekp(pos + 2); // Desplazarse a la posición correcta del 'status'
         dataFile.write("D", 1);
-
         dataFile.close();
 
         cout << "\nRegistro eliminado correctamente.\n";
-        system("pause");
+        systemPauseWn();
     }
 };
 
@@ -1034,30 +1020,24 @@ int main()
     try
     {
         Database db;
-
-        // Declaración de ambos archivos solo una vez
         ifstream dataFileCheck(DATA_FILE, ios::binary);
         ifstream indexFileCheck(HASH_INDEX_FILE, ios::binary);
 
-        // Verificar si ambos archivos están disponibles y no están vacíos
+        // Verificar si ambos archivos están disponibles y no están vacios
         if (!dataFileCheck.is_open() || dataFileCheck.peek() == ifstream::traits_type::eof() ||
             !indexFileCheck.is_open() || indexFileCheck.peek() == ifstream::traits_type::eof())
         {
-            cout << "Generando datos y archivo de índice hash..." << endl;
+            cout << "Generando datos..." << endl;
             db.generateData();
         }
         else
         {
-            cout << "Archivo de datos y archivo de índice hash cargados correctamente." << endl;
+            cout << "Archivo de datos y archivo de indice hash cargados correctamente." << endl;
         }
-
-        // Cerrar los archivos después de la verificación
         dataFileCheck.close();
         indexFileCheck.close();
 
-        // Cargar el índice en memoria
         db.loadIndex();
-
         db.menu();
     }
     catch (const exception &ex)
