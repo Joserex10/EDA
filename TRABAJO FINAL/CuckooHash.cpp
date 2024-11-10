@@ -15,7 +15,6 @@
 #include <functional>
 #include <stdexcept>
 #include <utility>
-
 using namespace std;
 
 const int RECORD_COUNT = 33000000;  // Catidad de registros a generar
@@ -38,7 +37,6 @@ size_t hashFunction1(uint32_t key)
 {
     return std::hash<uint32_t>{}(key);
 }
-
 size_t hashFunction2(uint32_t key)
 {
     return std::hash<uint32_t>{}(~key);
@@ -65,7 +63,7 @@ private:
     size_t maxIterations;
 
 public:
-    CuckooHashMap(size_t initialCapacity = 20000000, size_t maxLoop = 500)
+    CuckooHashMap(size_t initialCapacity = 19000000, size_t maxLoop = 500)
         : capacity(initialCapacity), size(0), maxIterations(maxLoop)
     {
         table1.resize(capacity);
@@ -77,24 +75,21 @@ public:
         if (key == 0)
             throw std::invalid_argument("Key cannot be zero.");
 
-        // Verificar si la clave ya existe en table1
-        size_t h1 = hashFunction1(key) % capacity;
+        size_t h1 = hashFunction1(key) % capacity; // Verificar si la clave ya existe en table1
         if (table1[h1].key == key)
         {
             table1[h1].value = value;
             return;
         }
 
-        // Verificar si la clave ya existe en table2
-        size_t h2 = hashFunction2(key) % capacity;
+        size_t h2 = hashFunction2(key) % capacity; // Verificar si la clave ya existe en table2
         if (table2[h2].key == key)
         {
             table2[h2].value = value;
             return;
         }
 
-        // Si la clave no existe, proceder con la inserción
-        if (size >= capacity * 0.9)
+        if (size >= capacity * 0.95) // Si la clave no existe, proceder con la insercion
         {
             rehash();
         }
@@ -124,9 +119,7 @@ public:
             std::swap(k, table2[h2].key);
             std::swap(v, table2[h2].value);
         }
-
-        // Si falla después de maxIterations, rehash y reintentar
-        rehash();
+        rehash(); // Si falla después de maxIterations, rehash y reintentar
         insert(k, v);
     }
 
@@ -163,7 +156,6 @@ public:
             --size;
             return;
         }
-        // Clave no encontrada
     }
 
     void clear()
@@ -215,9 +207,7 @@ public:
             table2[h2].value = value;
             return;
         }
-
-        // Si la clave no existe, insertar normalmente
-        insert(key, value);
+        insert(key, value); // Si la clave no existe, insertar normalmente
     }
 };
 
@@ -282,7 +272,6 @@ public:
         getline(iss, record.estadoCivil);
 
         record.direccion = record.departamento + ", " + record.provincia + ", " + record.ciudad + ", " + record.distrito + ", " + record.ubicacion;
-
         return record;
     }
 };
@@ -290,9 +279,8 @@ public:
 class Database
 {
 private:
-    CuckooHashMap indexMap; // Mapa Cuckoo Hash para el índice
-    // Genera DNI Unicos para cada persona
-    vector<int> generateUniqueDni(int count)
+    CuckooHashMap indexMap;                  // Mapa Cuckoo Hash para el índice
+    vector<int> generateUniqueDni(int count) // Genera DNI Unicos para cada persona
     {
         vector<int> dniList;
         for (int i = 10000000; i < 10000000 + count; ++i)
@@ -303,7 +291,6 @@ private:
         random_device rd;
         mt19937 g(rd());
         shuffle(dniList.begin(), dniList.end(), g); // shuffle es utilizado para que los DNI esten distribuidos de una manera no secuencial
-
         return dniList;
     }
 
@@ -318,7 +305,6 @@ public:
 
         uint32_t dniInFile;
         uint64_t pos;
-
         indexMap.clear();
 
         while (indexFile.read(reinterpret_cast<char *>(&dniInFile), sizeof(uint32_t)))
@@ -326,12 +312,10 @@ public:
             indexFile.read(reinterpret_cast<char *>(&pos), sizeof(uint64_t));
             indexMap.insert(dniInFile, pos);
         }
-
         indexFile.close();
     }
 
-    // Busca un DNI en el índice en memoria y devuelve su posición en el archivo de datos
-    uint64_t findPositionInIndex(uint32_t dni)
+    uint64_t findPositionInIndex(uint32_t dni) // Busca un DNI en el índice en memoria y devuelve su posición en el archivo de datos
     {
         uint64_t pos = indexMap.find(dni);
         return pos;
@@ -367,13 +351,7 @@ public:
         const int fechasNacimientoSize = sizeof(fechasNacimiento) / sizeof(fechasNacimiento[0]);
 
         unordered_map<string, unordered_map<string, unordered_map<string, pair<string, vector<string>>>>> peru_geografia = {
-            {"Lima", {{"Lima", {{"San Isidro", {"Lima", {"Av. Javier Prado 1234", "Av. Camino Real 5678"}}}, {"Miraflores", {"Lima", {"Av. Larco 1234", "Av. Pardo 5678"}}}, {"San Borja", {"Lima", {"Av. San Borja Norte 1357", "Av. De Las Artes 2468"}}}, {"La Molina", {"Lima", {"Av. La Molina 6785", "Av. Raul Ferrero 8642"}}}}}, {"Huaral", {{"Huaral", {"Huaral", {"Av. Solar 1111", "Av. Peral 2222"}}}, {"Chancay", {"Chancay", {"Av. Chancay 9876", "Av. Libertad 5432"}}}, {"Aucallama", {"Aucallama", {"Av. Grau 8231", "Av. Tupac Amaru 1742"}}}}}, {"Canete", {{"San Vicente", {"Canete", {"Av. Benavides 6543", "Av. 28 de Julio 3210"}}}, {"Imperial", {"Canete", {"Av. La Mar 8765", "Av. Dos de Mayo 9087"}}}}}, {"Barranca", {{"Pativilca", {"Barranca", {"Av. Independencia 3456", "Av. Progreso 8769"}}}, {"Supe", {"Barranca", {"Av. Lima 1234", "Av. Panamericana Norte 5678"}}}}}}},
-            {"Cusco", {{"Urubamba", {{"Ollantaytambo", {"Urubamba", {"Calle Principal Ollantaytambo 123", "Camino Inca Ollantaytambo"}}}, {"Machu Picchu", {"Aguas Calientes", {"Av. Machu Picchu 456", "Calle Intipunku 789"}}}}}, {"La Convencion", {{"Quillabamba", {"Quillabamba", {"Av. de la Cultura 123", "Calle Comercio 456"}}}, {"Echarate", {"Echarate", {"Av. Echarate 789", "Calle Central 101"}}}}}, {"Calca", {{"Calca", {"Calca", {"Av. Tupac Amaru 564", "Calle Sacsayhuaman 678"}}}, {"Lamay", {"Calca", {"Av. Los Incas 4321", "Calle Inti Raymi 234"}}}}}, {"Paucartambo", {{"Paucartambo", {"Paucartambo", {"Av. Libertad 123", "Calle Qosqo 456"}}}}}}},
-            {"Arequipa", {{"Arequipa", {{"Cercado", {"Arequipa", {"Av. Independencia 654", "Av. Goyeneche 890"}}}, {"Yanahuara", {"Arequipa", {"Av. Ejercito 4321", "Av. Salaverry 5678"}}}, {"Cayma", {"Arequipa", {"Av. Cayma 8765", "Av. Panamericana 567"}}}}}, {"Caylloma", {{"Chivay", {"Caylloma", {"Calle Principal Chivay 345", "Calle Plaza de Armas 567"}}}}}, {"Islay", {{"Mollendo", {"Islay", {"Av. Maritima 456", "Calle El Sol 789"}}}, {"Mejia", {"Islay", {"Av. La Costanera 123", "Calle Los Pinos 567"}}}}}}},
-            {"Piura", {{"Piura", {{"Castilla", {"Piura", {"Av. Grau 1234", "Calle Los Cocos 5678"}}}, {"Catacaos", {"Piura", {"Calle Comercio 4321", "Av. 28 de Julio 8765"}}}}}, {"Sullana", {{"Sullana", {"Sullana", {"Av. Sanchez Cerro 123", "Av. Transversal 456"}}}}}, {"Talara", {{"Talara", {"Talara", {"Av. Industrial 654", "Av. Grau 876"}}}, {"Lobitos", {"Talara", {"Calle Mar 345", "Calle Sol 678"}}}}}}},
-            {"La Libertad", {{"Trujillo", {{"Trujillo", {"Trujillo", {"Av. Espana 9876", "Av. Mansiche 1234"}}}, {"Huanchaco", {"Trujillo", {"Av. Victor Larco 5678", "Calle Grau 987"}}}}}, {"Pacasmayo", {{"San Pedro de Lloc", {"Pacasmayo", {"Calle Comercio 345", "Calle Progreso 876"}}}, {"Guadalupe", {"Pacasmayo", {"Av. Principal 432", "Calle Las Palmas 654"}}}}}, {"Otuzco", {{"Otuzco", {"Otuzco", {"Av. Los Andes 876", "Calle 28 de Julio 321"}}}}}}},
-            {"Junin", {{"Huancayo", {{"El Tambo", {"Huancayo", {"Av. Huancavelica 567", "Calle Real 123"}}}, {"Chilca", {"Huancayo", {"Av. 9 de Diciembre 234", "Av. Tupac Amaru 654"}}}}}, {"Jauja", {{"Jauja", {"Jauja", {"Calle Comercio 432", "Calle Real 876"}}}}}, {"Tarma", {{"Tarma", {"Tarma", {"Av. Aviacion 345", "Calle Los Heroes 654"}}}}}}},
-            {"Puno", {{"Puno", {{"Puno", {"Puno", {"Av. Titicaca 654", "Calle Arequipa 987"}}}, {"Juliaca", {"Puno", {"Av. Ferrocarril 123", "Calle Huancavelica 567"}}}}}, {"Yunguyo", {{"Yunguyo", {"Yunguyo", {"Calle Comercio 345", "Av. Principal 654"}}}}}}}};
+            {"Lima", {{"Lima", {{"San Isidro", {"Lima", {"Av. Javier Prado 1234", "Av. Camino Real 5678"}}}, {"Miraflores", {"Lima", {"Av. Larco 1234", "Av. Pardo 5678"}}}, {"San Borja", {"Lima", {"Av. San Borja Norte 1357", "Av. De Las Artes 2468"}}}, {"La Molina", {"Lima", {"Av. La Molina 6785", "Av. Raul Ferrero 8642"}}}}}, {"Huaral", {{"Huaral", {"Huaral", {"Av. Solar 1111", "Av. Peral 2222"}}}, {"Chancay", {"Chancay", {"Av. Chancay 9876", "Av. Libertad 5432"}}}, {"Aucallama", {"Aucallama", {"Av. Grau 8231", "Av. Tupac Amaru 1742"}}}}}, {"Canete", {{"San Vicente", {"Canete", {"Av. Benavides 6543", "Av. 28 de Julio 3210"}}}, {"Imperial", {"Canete", {"Av. La Mar 8765", "Av. Dos de Mayo 9087"}}}}}, {"Barranca", {{"Pativilca", {"Barranca", {"Av. Independencia 3456", "Av. Progreso 8769"}}}, {"Supe", {"Barranca", {"Av. Lima 1234", "Av. Panamericana Norte 5678"}}}}}}}, {"Cusco", {{"Urubamba", {{"Ollantaytambo", {"Urubamba", {"Calle Principal Ollantaytambo 123", "Camino Inca Ollantaytambo"}}}, {"Machu Picchu", {"Aguas Calientes", {"Av. Machu Picchu 456", "Calle Intipunku 789"}}}}}, {"La Convencion", {{"Quillabamba", {"Quillabamba", {"Av. de la Cultura 123", "Calle Comercio 456"}}}, {"Echarate", {"Echarate", {"Av. Echarate 789", "Calle Central 101"}}}}}, {"Calca", {{"Calca", {"Calca", {"Av. Tupac Amaru 564", "Calle Sacsayhuaman 678"}}}, {"Lamay", {"Calca", {"Av. Los Incas 4321", "Calle Inti Raymi 234"}}}}}, {"Paucartambo", {{"Paucartambo", {"Paucartambo", {"Av. Libertad 123", "Calle Qosqo 456"}}}}}}}, {"Arequipa", {{"Arequipa", {{"Cercado", {"Arequipa", {"Av. Independencia 654", "Av. Goyeneche 890"}}}, {"Yanahuara", {"Arequipa", {"Av. Ejercito 4321", "Av. Salaverry 5678"}}}, {"Cayma", {"Arequipa", {"Av. Cayma 8765", "Av. Panamericana 567"}}}}}, {"Caylloma", {{"Chivay", {"Caylloma", {"Calle Principal Chivay 345", "Calle Plaza de Armas 567"}}}}}, {"Islay", {{"Mollendo", {"Islay", {"Av. Maritima 456", "Calle El Sol 789"}}}, {"Mejia", {"Islay", {"Av. La Costanera 123", "Calle Los Pinos 567"}}}}}}}, {"Piura", {{"Piura", {{"Castilla", {"Piura", {"Av. Grau 1234", "Calle Los Cocos 5678"}}}, {"Catacaos", {"Piura", {"Calle Comercio 4321", "Av. 28 de Julio 8765"}}}}}, {"Sullana", {{"Sullana", {"Sullana", {"Av. Sanchez Cerro 123", "Av. Transversal 456"}}}}}, {"Talara", {{"Talara", {"Talara", {"Av. Industrial 654", "Av. Grau 876"}}}, {"Lobitos", {"Talara", {"Calle Mar 345", "Calle Sol 678"}}}}}}}, {"La Libertad", {{"Trujillo", {{"Trujillo", {"Trujillo", {"Av. Espana 9876", "Av. Mansiche 1234"}}}, {"Huanchaco", {"Trujillo", {"Av. Victor Larco 5678", "Calle Grau 987"}}}}}, {"Pacasmayo", {{"San Pedro de Lloc", {"Pacasmayo", {"Calle Comercio 345", "Calle Progreso 876"}}}, {"Guadalupe", {"Pacasmayo", {"Av. Principal 432", "Calle Las Palmas 654"}}}}}, {"Otuzco", {{"Otuzco", {"Otuzco", {"Av. Los Andes 876", "Calle 28 de Julio 321"}}}}}}}, {"Junin", {{"Huancayo", {{"El Tambo", {"Huancayo", {"Av. Huancavelica 567", "Calle Real 123"}}}, {"Chilca", {"Huancayo", {"Av. 9 de Diciembre 234", "Av. Tupac Amaru 654"}}}}}, {"Jauja", {{"Jauja", {"Jauja", {"Calle Comercio 432", "Calle Real 876"}}}}}, {"Tarma", {{"Tarma", {"Tarma", {"Av. Aviacion 345", "Calle Los Heroes 654"}}}}}}}, {"Puno", {{"Puno", {{"Puno", {"Puno", {"Av. Titicaca 654", "Calle Arequipa 987"}}}, {"Juliaca", {"Puno", {"Av. Ferrocarril 123", "Calle Huancavelica 567"}}}}}, {"Yunguyo", {{"Yunguyo", {"Yunguyo", {"Calle Comercio 345", "Av. Principal 654"}}}}}}}};
 
         const string nacionalidades[] = {
             "Peruana", "Argentina", "Chilena", "Colombiana", "Venezolana", "Ecuatoriana", "Boliviana", "Brasilena", "Uruguaya", "Paraguaya", "Mexicana", "Guatemalteca", "Cubana", "Hondurena", "Salvadorena", "Costarricense", "Panamena", "Nicaraguense", "Dominicana", "Puertorriquena", "Espanola", "Italiana", "Francesa", "Alemana", "Inglesa", "Portuguesa", "Belga", "Holandesa", "Suiza", "Austriaca", "Sueca", "Noruega", "Danesa", "Finlandesa", "Rusa", "Polaca", "Griega", "Turca", "China", "Japonesa", "Coreana", "India", "Egipcia", "Sudafricana", "Australiana", "Neozelandesa", "Canadiense", "Estadounidense", "Mexicana", "Venezolana", "Colombiana", "Brasilena", "Peruana", "Argentina", "Chilena", "Boliviana", "Ecuatoriana", "Uruguaya", "Paraguaya", "Cubana", "Dominicana", "Salvadorena", "Costarricense", "Panamena", "Hondurena", "Nicaraguense", "Guatemalteca", "Belicena", "Jamaicana", "Haitiana", "Trinitense", "Bahamena", "Barbadense", "Granadina", "Surinamesa", "Guyanes", "Venezolana", "Colombiana", "Peruana", "Brasilena", "Argentina", "Chilena", "Boliviana", "Paraguaya", "Uruguaya", "Ecuatoriana", "Mexicana", "Guatemalteca", "Salvadorena", "Hondurena", "Nicaraguense", "Costarricense", "Panamena", "Cana", "Estadounidense", "Canadiense", "Espanola", "Francesa", "Italiana", "Alemana", "Inglesa", "Irlandesa", "Escocesa", "Galesa", "Portuguesa", "Belga", "Holandesa", "Suiza", "Austriaca", "Sueca", "Noruega", "Danesa", "Finlandesa", "Rusa", "Polaca", "Checa", "Eslovaca", "Hungara", "Griega", "Turca", "Bulgara", "Rumana", "Croata", "Serbia", "Eslovena", "Bosnia", "Macedonia", "Albanesa", "Ucraniana", "Bielorrusa", "Lituana", "Letona", "Estonia", "Moldava", "Kazaja", "Uzbeca", "Tayika", "Kirguisa", "Turkmena", "Azerbaiyana", "Armenia", "Georgiana", "China", "Japonesa", "Coreana", "India", "Pakistani", "Bangladesi", "Nepali", "Butanesa", "Camboyana", "Vietnamita", "Laosiana", "Tailandesa", "Malaya", "Indonesia", "Filipina", "Singapurense", "Bruneana", "Australiana", "Neozelandesa", "Papu", "Egipcia", "Marroqui", "Argelina", "Tunecina", "Libia", "Sudanesa", "Etiope", "Somali", "Keniata", "Tanzana", "Ugandesa", "Ruandesa", "Congolena", "Sudafricana", "Nigeriana", "Ghanesa", "Senegalesa", "Mali", "Chadiana", "Angolena", "Zimbabuense", "Mozambiquena", "Madagascarense", "Namibia", "Botswana", "Zambiana", "Malaui", "Lesoto", "Suazi", "Gambiana", "Mauritana", "Liberiana", "Sierra Leona", "Guineana", "Ecuatoguineana", "Gabonesa", "Saharaui", "Israeli", "Palestina", "Jordana", "Libanesa", "Siria", "Iraqui", "Irani", "Saudi", "Emirati", "Qatari", "Kuwaiti", "Yemeni", "Omani", "Bahraini"};
@@ -400,11 +378,8 @@ public:
         const string emailDomains[] = {"@gmail.com", "@yahoo.com", "@hotmail.com", "@outlook.com", "@live.com"};
         const int emailDomainsSize = sizeof(emailDomains) / sizeof(emailDomains[0]);
 
-        // Contador para garantizar unicidad si es necesario
-
         vector<int> dniList = generateUniqueDni(RECORD_COUNT);
 
-        // Agregar encabezado de columnas al inicio del archivo usando el delimitador con espacios ' | '
         dataFile << "Status |    DNI   |     Nombre    |     Apellido    | Genero |  FechaNac  | Edad | Departamento |   Provincia   |     Ciudad      |     Distrito      |           Ubicacion            | Nacionalidad |     LugarNac     |   TelRef   |             Correo              | EstadoCivil\n";
 
         const size_t BUFFER_SIZE = 100000; // Numero de registros a bufferizar
@@ -421,8 +396,7 @@ public:
 
             string emailLocalPart = nombre + "." + apellidoc + to_string(dni % 1000);
 
-            // Verificar si ya existe y agregar un numero si es necesario
-            transform(emailLocalPart.begin(), emailLocalPart.end(), emailLocalPart.begin(), ::tolower);
+            transform(emailLocalPart.begin(), emailLocalPart.end(), emailLocalPart.begin(), ::tolower); // Verificar si ya existe y agregar un numero si es necesario
 
             string emailDomain = emailDomains[rand() % emailDomainsSize];
             string correoElectronico = emailLocalPart + emailDomain;
@@ -432,30 +406,24 @@ public:
             int birthYear = 2024 - edad;
             string fechaNacimiento = fechasNacimiento[randomIndex] + "-" + to_string(birthYear);
 
-            // 1. Seleccionar departamento
-            auto departamento_it = peru_geografia.begin();
+            auto departamento_it = peru_geografia.begin(); // Seleccionar departamento
             advance(departamento_it, rand() % peru_geografia.size());
             string departamento = departamento_it->first;
 
-            // 2. Seleccionar provincia
-            auto provincia_it = departamento_it->second.begin();
+            auto provincia_it = departamento_it->second.begin(); // Seleccionar provincia
             advance(provincia_it, rand() % departamento_it->second.size());
             string provincia = provincia_it->first;
 
-            // 3. Seleccionar distrito
-            auto distrito_it = provincia_it->second.begin();
+            auto distrito_it = provincia_it->second.begin(); // Seleccionar distrito
             advance(distrito_it, rand() % provincia_it->second.size());
             string distrito = distrito_it->first;
 
-            // Obtener la ciudad asociada al distrito
-            string ciudad = distrito_it->second.first;
+            string ciudad = distrito_it->second.first; // Obtener la ciudad asociada al distrito
 
-            // 4. Seleccionar ubicacion segun el distrito
-            vector<string> &ubicaciones = distrito_it->second.second;
+            vector<string> &ubicaciones = distrito_it->second.second; // Seleccionar ubicacion segun el distrito
             string ubicacion = ubicaciones[rand() % ubicaciones.size()];
 
-            // Construir la direccion completa
-            string direccion = departamento + ", " + provincia + ", " + distrito + ", " + ubicacion;
+            string direccion = departamento + ", " + provincia + ", " + distrito + ", " + ubicacion; // Construir la direccion completa
 
             string nacionalidad = nacionalidades[rand() % nacionalidadesSize];
             string lugarNacimiento = lugaresNacimiento[rand() % lugaresNacimientoSize];
@@ -506,6 +474,19 @@ public:
         loadIndex();
     }
 
+    void MenuWorkFlow()
+    {
+        cout << system("pause");
+        cout << "\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    void systemPauseWn()
+    {
+        system("pause");
+        cout << "\n";
+    }
+
     // Funcion que permite ingresar al usuario un nuevo registro. Con validaciones incluidas
     void insertRecord()
     {
@@ -514,8 +495,7 @@ public:
         string nombre, apellido, direccion, nacionalidad, lugarNacimiento, telefonoReferencia, correoElectronico, estadoCivil, departamento, provincia, ciudad, distrito, ubicacion;
         char genero;
 
-        // Funcion que verifica si el input introducido es una letra
-        auto esAlfabetico = [](const string &str) -> bool
+        auto esAlfabetico = [](const string &str) -> bool // Funcion que verifica si el input introducido es una letra
         {
             return !str.empty() && all_of(str.begin(), str.end(), [](char c)
                                           { return isalpha(c) || isspace(c); });
@@ -539,8 +519,7 @@ public:
             return str.substr(first, (last - first + 1));
         };
 
-        // Ingreso de DNI
-        cout << "\nIngrese DNI (8 digitos): ";
+        cout << "\nIngrese DNI (8 digitos): "; // Ingreso de DNI
         while (!(cin >> dni) || dni < 10000000 || dni > 99999999)
         {
             cout << "DNI invalido. Debe ser un numero de 8 digitos. Intente nuevamente: ";
@@ -550,12 +529,10 @@ public:
 
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        // Verificar si el DNI ya existe
-        uint64_t pos = findPositionInIndex(dni);
+        uint64_t pos = findPositionInIndex(dni); // Verificar si el DNI ya existe
         if (pos != static_cast<uint64_t>(-1))
         {
-            // Leer el estado del registro
-            ifstream dataFile(DATA_FILE, ios::binary);
+            ifstream dataFile(DATA_FILE, ios::binary); // Leer el estado del registro
             if (!dataFile.is_open())
             {
                 cout << "\nError abriendo el archivo de datos.\n";
@@ -580,8 +557,7 @@ public:
             return;
         }
 
-        // Ingreso y validacion del nombre (solo letras y espacios)
-        do
+        do // Ingreso y validacion del nombre (solo letras y espacios)
         {
             cout << "Ingrese nombre: ";
             getline(cin, nombre);
@@ -596,8 +572,7 @@ public:
             }
         } while (!esAlfabetico(nombre));
 
-        // Ingreso y validacion del apellido (solo letras y espacios)
-        do
+        do // Ingreso y validacion del apellido (solo letras y espacios)
         {
             cout << "Ingrese apellido: ";
             getline(cin, apellido);
@@ -612,24 +587,40 @@ public:
             }
         } while (!esAlfabetico(apellido));
 
-        // Validacion del genero
-        cout << "Ingrese genero (M/F): ";
-        while (!(cin >> genero) || (toupper(genero) != 'M' && toupper(genero) != 'F'))
+        cout << "Ingrese genero (M/F): "; // Validacion del genero
+        while (true)
         {
-            cout << "Genero invalido. Intente nuevamente (M/F): ";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            if (cin >> genero && (toupper(genero) == 'M' || toupper(genero) == 'F'))
+            {
+                // Verificar si el siguiente carácter es un salto de línea
+                if (cin.peek() == '\n')
+                {
+                    // Consumir el salto de línea
+                    cin.get();
+                    genero = toupper(genero);
+                    break; // Entrada válida, salir del bucle
+                }
+                else
+                {
+                    cout << "Genero invalido. No se permiten caracteres adicionales. Intente nuevamente (M/F): ";
+                    cin.clear();                                         // Limpiar el estado de error de cin
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignorar el resto de la línea
+                }
+            }
+            else
+            {
+                cout << "Genero invalido. Debe ser 'M' o 'F'. Intente nuevamente (M/F): ";
+                cin.clear();                                         // Limpiar el estado de error de cin
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignorar el resto de la línea
+            }
         }
-        genero = toupper(genero);
 
-        // Validacion de la edad (solo numeros)
-        cout << "Ingrese edad: ";
+        cout << "Ingrese edad: "; // Validacion de la edad (solo numeros)
         while (true)
         {
             if (cin >> edad && edad >= 1 && edad <= 120)
             {
-                // Verificar si hay caracteres adicionales en el buffer
-                if (cin.peek() == '\n')
+                if (cin.peek() == '\n') // Verificar si hay caracteres adicionales en el buffer
                 {
                     cin.get(); // Consumir el salto de linea
                     break;     // Entrada valida, salir del bucle
@@ -649,13 +640,11 @@ public:
             }
         }
 
-        // Calcular el ano de nacimiento basado en la edad
         int currentYear = 2024;
         int birthYear = currentYear - edad;
-        string fechaNacimiento = "01-01-" + to_string(birthYear);
+        string fechaNacimiento = "01-01-" + to_string(birthYear); // Calcular el ano de nacimiento basado en la edad
 
-        // Ingreso y validacion de la direccion detallada
-        do
+        do // Ingreso y validacion de la direccion detallada
         {
             cout << "Ingrese departamento: ";
             getline(cin, departamento);
@@ -727,11 +716,9 @@ public:
             }
         } while (!esUbicacionValida(ubicacion));
 
-        // Construir la direccion completa
-        direccion = departamento + ", " + provincia + ", " + ciudad + ", " + distrito + ", " + ubicacion;
+        direccion = departamento + ", " + provincia + ", " + ciudad + ", " + distrito + ", " + ubicacion; // Construir la direccion completa
 
-        // Ingreso y validacion de nacionalidad (solo letras y espacios)
-        do
+        do // Ingreso y validacion de nacionalidad (solo letras y espacios)
         {
             cout << "Ingrese nacionalidad: ";
             getline(cin, nacionalidad);
@@ -746,8 +733,7 @@ public:
             }
         } while (!esAlfabetico(nacionalidad));
 
-        // Ingreso y validacion del lugar de nacimiento (solo letras y espacios)
-        do
+        do // Ingreso y validacion del lugar de nacimiento (solo letras y espacios)
         {
             cout << "Ingrese lugar de nacimiento: ";
             getline(cin, lugarNacimiento);
@@ -762,8 +748,7 @@ public:
             }
         } while (!esAlfabetico(lugarNacimiento));
 
-        // Validacion de telefono de referencia (9 digitos, comienza con '9')
-        do
+        do // Validacion de telefono de referencia (9 digitos, comienza con '9')
         {
             cout << "Ingrese telefono de referencia (9 digitos, comienza con '9'): ";
             getline(cin, telefonoReferencia);
@@ -773,8 +758,7 @@ public:
             }
         } while (telefonoReferencia.length() != 9 || !all_of(telefonoReferencia.begin(), telefonoReferencia.end(), ::isdigit) || telefonoReferencia[0] != '9');
 
-        // Validacion de correo electronico utilizando expresion regular
-        do
+        do // Validacion de correo electronico utilizando expresion regular
         {
             cout << "Ingrese correo electronico: ";
             getline(cin, correoElectronico);
@@ -786,8 +770,7 @@ public:
             }
         } while (!regex_match(correoElectronico, regex(R"(^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$)")));
 
-        // Validacion de estado civil (solo Casad@, Solter@, Divorciad@, Viud@)
-        do
+        do // Validacion de estado civil (solo Casad@, Solter@, Divorciad@, Viud@)
         {
             cout << "Ingrese estado civil (Casad@/Solter@/Divorciad@/Viud@): ";
             getline(cin, estadoCivil);
@@ -799,8 +782,7 @@ public:
             }
         } while (estadoCivil != "casado" && estadoCivil != "casada" && estadoCivil != "soltero" && estadoCivil != "soltera" && estadoCivil != "divorciado" && estadoCivil != "divorciada" && estadoCivil != "viudo" && estadoCivil != "viuda");
 
-        // Guardar el registro (el codigo de guardado permanece igual)
-        fstream dataFile(DATA_FILE, ios::in | ios::out | ios::binary);
+        fstream dataFile(DATA_FILE, ios::in | ios::out | ios::binary); // Guardar el registro
         ofstream indexFile(HASH_INDEX_FILE, ios::binary | ios::app);
 
         if (!dataFile.is_open() || !indexFile.is_open())
@@ -812,17 +794,14 @@ public:
         dataFile.seekp(0, ios::end);
         uint64_t posNueva = static_cast<uint64_t>(dataFile.tellp());
 
-        // Crear el objeto Record
         Record record(dni, nombre, apellido, genero, fechaNacimiento, edad, direccion, nacionalidad, lugarNacimiento, telefonoReferencia, correoElectronico, estadoCivil, departamento, provincia, ciudad, distrito, ubicacion);
 
         string recordStr = record.serialize();
         dataFile << recordStr;
 
-        // Actualizar el índice en memoria
-        indexMap.insert(dni, posNueva);
+        indexMap.insert(dni, posNueva); // Actualizar el índice en memoria
 
-        // Escribir la nueva entrada al final del archivo de índice
-        indexFile.seekp(0, ios::end);
+        indexFile.seekp(0, ios::end); // Escribir la nueva entrada al final del archivo de índice
         indexFile.write(reinterpret_cast<const char *>(&dni), sizeof(uint32_t));
         indexFile.write(reinterpret_cast<const char *>(&posNueva), sizeof(uint64_t));
 
@@ -831,19 +810,6 @@ public:
 
         cout << "\nRegistro insertado correctamente.\n";
         systemPauseWn();
-    }
-
-    void MenuWorkFlow()
-    {
-        cout << system("pause");
-        cout << "\n";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-    void systemPauseWn()
-    {
-        system("pause");
-        cout << "\n";
     }
 
     void menu()
@@ -973,8 +939,7 @@ public:
         systemPauseWn();
     }
 
-    // Elimina un registro mediante su DNI, Escribe un D de (delete) en el resgitro
-    void deleteByDni(uint32_t dni)
+    void deleteByDni(uint32_t dni) // Elimina un registro mediante su DNI, Escribe un D de (delete) en el resgitro
     {
         uint64_t pos = findPositionInIndex(dni);
         if (pos == static_cast<uint64_t>(-1))
